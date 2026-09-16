@@ -99,7 +99,7 @@ fun CalendarScreen(
                     color = GreenDark
                 )
                 Text(
-                    "2026 • $year",
+                    "Kalender $year",
                     style = MaterialTheme.typography.bodySmall,
                     color = TextMuted
                 )

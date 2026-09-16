@@ -1,6 +1,6 @@
 package com.wahidiyah.miladiyyah.data.repository
 
-import com.wahidiyah.miladiyyah.data.local.AnnouncementEntity
+import com.wahidiyah.miladiyyah.data.local.room.entity.AnnouncementEntity
 import com.wahidiyah.miladiyyah.data.remote.AnnouncementApiClient
 
 class AnnouncementSyncRepository(

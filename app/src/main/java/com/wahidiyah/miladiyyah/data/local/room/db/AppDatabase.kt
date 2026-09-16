@@ -20,16 +20,17 @@ import com.wahidiyah.miladiyyah.data.local.room.entity.RegionRuleEntity
         AgendaEntity::class,
         PrayerTimeEntity::class,
         RegionRuleEntity::class,
-        NotificationPreferencesEntity::class
+        NotificationPreferencesEntity::class,
+        AnnouncementEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun calendarDayDao(): CalendarDayDao
     abstract fun agendaDao(): AgendaDao
-    abstract fun announcementDao(): AnnouncementDao
     abstract fun prayerTimeDao(): PrayerTimeDao
     abstract fun notificationPreferencesDao(): NotificationPreferencesDao
+    abstract fun announcementDao(): AnnouncementDao
 }

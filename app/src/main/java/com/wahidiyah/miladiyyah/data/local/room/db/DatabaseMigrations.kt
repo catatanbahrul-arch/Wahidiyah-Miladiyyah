@@ -44,14 +44,15 @@ object DatabaseMigrations {
                 CREATE TABLE IF NOT EXISTS announcements (
                     id TEXT NOT NULL,
                     title TEXT NOT NULL,
-                    body TEXT NOT NULL,
-                    publishedAt TEXT NOT NULL,
+                    body TEXT,
+                    publishedAt TEXT,
                     actionLabel TEXT,
                     actionUrl TEXT,
-                    isActive INTEGER NOT NULL DEFAULT 1,
+                    isPublished INTEGER NOT NULL DEFAULT 1,
                     PRIMARY KEY(id)
                 )
                 """.trimIndent()
             )
         }
-    }}
+    }
+}

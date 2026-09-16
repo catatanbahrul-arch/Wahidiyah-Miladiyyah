@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.wahidiyah.miladiyyah.core.navigation.AppNavHost
+import com.wahidiyah.miladiyyah.data.local.AnnouncementLocalSeeder
 import com.wahidiyah.miladiyyah.core.notification.AgendaNotificationHelper
 import com.wahidiyah.miladiyyah.core.notification.PrayerNotificationHelper
 import com.wahidiyah.miladiyyah.core.notification.PrayerNotificationScheduler
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
         requestNotificationPermissionIfNeeded()
 
         lifecycleScope.launch {
+            AnnouncementLocalSeeder.seedIfEmpty(this@MainActivity)
             AgendaReminderCoordinator.reschedule(this@MainActivity)
             PrayerNotificationScheduler.scheduleUpcoming(this@MainActivity)
             DanaBoxNotificationHelper.ensureChannel(this@MainActivity)

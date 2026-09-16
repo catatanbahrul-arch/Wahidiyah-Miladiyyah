@@ -6,10 +6,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "agendas")
 data class AgendaEntity(
     @PrimaryKey val id: String,
-    val date: String,                        // YYYY-MM-DD
+    val date: String,
+    val startDate: String,
+    val endDate: String,
     val title: String,
     val detail: String? = null,
     val sourceColor: String = "GREEN",
-    val status: String = "review",           // review | published
+    val status: String = "review",
     val reminderEnabled: Boolean = true
 )

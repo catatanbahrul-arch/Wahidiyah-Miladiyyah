@@ -1,0 +1,36 @@
+package com.wahidiyah.miladiyyah.data.local.room.db
+
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+
+object DatabaseMigrations {
+
+    val MIGRATION_1_2 = object : Migration(1, 2) {
+
+        override fun migrate(
+            database: SupportSQLiteDatabase
+        ) {
+            database.execSQL(
+                "ALTER TABLE agendas ADD COLUMN startDate TEXT NOT NULL DEFAULT ''"
+            )
+
+            database.execSQL(
+                "ALTER TABLE agendas ADD COLUMN endDate TEXT NOT NULL DEFAULT ''"
+            )
+
+            database.execSQL(
+                """
+                UPDATE agendas
+                SET startDate = date,
+                    endDate = date
+                WHERE startDate = ''
+                   OR endDate = ''
+                """.trimIndent()
+            )
+
+            database.execSQL(
+                "ALTER TABLE notification_preferences ADD COLUMN agendaReminderTime TEXT NOT NULL DEFAULT '08:00'"
+            )
+        }
+    }
+}

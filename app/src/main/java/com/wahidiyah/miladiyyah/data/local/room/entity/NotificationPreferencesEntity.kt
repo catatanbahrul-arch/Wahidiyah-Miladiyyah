@@ -11,5 +11,6 @@ data class NotificationPreferencesEntity(
     val danaBoxEveningTime: String = "17:00",
     val imsakEnabled: Boolean = true,
     val adzanEnabled: Boolean = true,
-    val agendaReminderEnabled: Boolean = true
+    val agendaReminderEnabled: Boolean = true,
+    val agendaReminderTime: String = "08:00"
 )

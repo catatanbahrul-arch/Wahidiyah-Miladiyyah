@@ -1,5 +1,6 @@
 package com.wahidiyah.miladiyyah.feature.events.reminder
 
+import com.wahidiyah.miladiyyah.data.local.room.entity.AgendaEntity
 import com.wahidiyah.miladiyyah.data.source.PhysicalAgenda
 import java.util.Calendar
 
@@ -98,5 +99,16 @@ object AgendaReminderPlanner {
             value / 10000,
             (value / 100) % 100,
             value % 100
+        )
+
+    fun planFor(agenda: AgendaEntity): List<AgendaReminder> =
+        planFor(
+            PhysicalAgenda(
+                id = agenda.id,
+                startDate = agenda.startDate.replace("-", "").toInt(),
+                endDate = agenda.endDate.replace("-", "").toInt(),
+                title = agenda.title,
+                sourceColor = agenda.sourceColor
+            )
         )
 }

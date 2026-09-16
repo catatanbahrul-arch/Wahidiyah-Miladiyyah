@@ -42,5 +42,30 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".core.notification.DanaBoxNotificationReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".core.notification.DanaBoxBootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".core.notification.TasyafuanNotificationReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".core.notification.TasyafuanBootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

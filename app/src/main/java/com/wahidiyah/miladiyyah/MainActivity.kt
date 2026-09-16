@@ -12,6 +12,10 @@ import com.wahidiyah.miladiyyah.core.navigation.AppNavHost
 import com.wahidiyah.miladiyyah.core.notification.AgendaNotificationHelper
 import com.wahidiyah.miladiyyah.core.notification.PrayerNotificationHelper
 import com.wahidiyah.miladiyyah.core.notification.PrayerNotificationScheduler
+import com.wahidiyah.miladiyyah.core.notification.DanaBoxNotificationHelper
+import com.wahidiyah.miladiyyah.core.notification.DanaBoxNotificationScheduler
+import com.wahidiyah.miladiyyah.core.notification.TasyafuanNotificationHelper
+import com.wahidiyah.miladiyyah.core.notification.TasyafuanNotificationScheduler
 import com.wahidiyah.miladiyyah.core.notification.AgendaReminderCoordinator
 import com.wahidiyah.miladiyyah.core.theme.WahidiyahTheme
 import kotlinx.coroutines.launch
@@ -41,6 +45,10 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             AgendaReminderCoordinator.reschedule(this@MainActivity)
             PrayerNotificationScheduler.scheduleUpcoming(this@MainActivity)
+            DanaBoxNotificationHelper.ensureChannel(this@MainActivity)
+            TasyafuanNotificationHelper.ensureChannel(this@MainActivity)
+            DanaBoxNotificationScheduler.scheduleUpcoming(this@MainActivity)
+            TasyafuanNotificationScheduler.scheduleUpcoming(this@MainActivity)
         }
 
         setContent {

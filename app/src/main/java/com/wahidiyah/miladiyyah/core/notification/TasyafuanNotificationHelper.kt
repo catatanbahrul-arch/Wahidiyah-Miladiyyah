@@ -7,17 +7,13 @@ import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 
-object PrayerNotificationHelper {
+object TasyafuanNotificationHelper {
 
-    const val CHANNEL_ID = "prayer_times"
+    const val CHANNEL_ID = "tasyafuan"
+    private const val CHANNEL_NAME = "Tasyafuan"
 
-    fun ensureChannel(
-        context: Context
-    ) {
-        if (
-            Build.VERSION.SDK_INT <
-            Build.VERSION_CODES.O
-        ) {
+    fun ensureChannel(context: Context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return
         }
 
@@ -28,7 +24,7 @@ object PrayerNotificationHelper {
 
         val soundUri =
             Uri.parse(
-                "android.resource://${context.packageName}/raw/adzan"
+                "android.resource://${context.packageName}/raw/tasyafuan"
             )
 
         val audioAttributes =
@@ -40,11 +36,11 @@ object PrayerNotificationHelper {
         val channel =
             NotificationChannel(
                 CHANNEL_ID,
-                "Jadwal Shalat",
+                CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
                 description =
-                    "Pengingat Imsak dan waktu shalat dari kalender fisik Miladiyyah"
+                    "Pengingat Tasyafuan setiap pukul 03.00 WIB"
 
                 setSound(
                     soundUri,

@@ -1,4 +1,6 @@
-﻿package com.wahidiyah.miladiyyah.data.sync
+package com.wahidiyah.miladiyyah.data.sync
+
+import com.wahidiyah.miladiyyah.data.local.room.db.DatabaseProvider
 
 import android.content.Context
 import androidx.work.CoroutineWorker
@@ -6,7 +8,6 @@ import androidx.work.WorkerParameters
 import com.wahidiyah.miladiyyah.data.remote.AnnouncementApiClient
 import com.wahidiyah.miladiyyah.data.repository.AnnouncementRepository
 import com.wahidiyah.miladiyyah.data.repository.AnnouncementSyncRepository
-import com.wahidiyah.miladiyyah.data.local.DatabaseProvider
 
 class AnnouncementSyncWorker(
     appContext: Context,

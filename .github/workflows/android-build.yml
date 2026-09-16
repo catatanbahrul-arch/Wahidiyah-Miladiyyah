@@ -1,15 +1,19 @@
-﻿name: Android Build
+name: Android Build
 
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout source
         uses: actions/checkout@v7
 
@@ -23,11 +27,55 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
 
+      - name: Check repository
+        run: |
+          git status --short
+          test -f app/build.gradle.kts
+          test -f gradlew
+
+      - name: Check signing configuration
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_FILE" ] && \
+             [ -n "$KEYSTORE_PASSWORD" ] && \
+             [ -n "$KEY_ALIAS" ] && \
+             [ -n "$KEY_PASSWORD" ]; then
+            echo "Release signing secrets detected."
+          else
+            echo "Release signing secrets are not configured yet."
+            echo "Release AAB will be validated without signing."
+          fi
+
       - name: Build debug APK
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew assembleDebug --stacktrace
 
       - name: Build release AAB
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew bundleRelease --stacktrace
+
+      - name: Verify build outputs
+        run: |
+          test -n "$(find app/build/outputs/apk/debug -name '*.apk' -print -quit)"
+          test -n "$(find app/build/outputs/bundle/release -name '*.aab' -print -quit)"
+
+          echo "Debug APK:"
+          find app/build/outputs/apk/debug -name '*.apk' -print
+
+          echo "Release AAB:"
+          find app/build/outputs/bundle/release -name '*.aab' -print
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v7

@@ -36,11 +36,17 @@ class AnnouncementSyncRepository(
             )
         }
 
-        localRepository.clear()
-
-        if (mapped.isNotEmpty()) {
-            localRepository.save(mapped)
+        /*
+         * Jangan menghapus cache lokal jika server mengembalikan
+         * daftar kosong. Respons kosong belum tentu berarti
+         * seluruh pengumuman memang harus dihapus.
+         */
+        if (mapped.isEmpty()) {
+            return 0
         }
+
+        localRepository.clear()
+        localRepository.save(mapped)
 
         return mapped.size
     }

@@ -1,5 +1,7 @@
 package com.wahidiyah.miladiyyah.data.remote
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -14,7 +16,7 @@ class AnnouncementApiClient(
         isLenient = true
     }
 
-    suspend fun fetch(): AnnouncementApiResponse {
+    suspend fun fetch(): AnnouncementApiResponse = withContext(Dispatchers.IO) {
         require(endpointUrl.startsWith("https://")) {
             "Endpoint Announcement API wajib menggunakan HTTPS."
         }
@@ -27,7 +29,7 @@ class AnnouncementApiClient(
                 setRequestProperty("Accept", "application/json")
             }
 
-        return try {
+        try {
             val status = connection.responseCode
 
             if (status !in 200..299) {

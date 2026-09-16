@@ -3,10 +3,12 @@ package com.wahidiyah.miladiyyah.data.local.room.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.wahidiyah.miladiyyah.data.local.room.dao.AgendaDao
+import com.wahidiyah.miladiyyah.data.local.room.dao.AnnouncementDao
 import com.wahidiyah.miladiyyah.data.local.room.dao.CalendarDayDao
 import com.wahidiyah.miladiyyah.data.local.room.dao.NotificationPreferencesDao
 import com.wahidiyah.miladiyyah.data.local.room.dao.PrayerTimeDao
 import com.wahidiyah.miladiyyah.data.local.room.entity.AgendaEntity
+import com.wahidiyah.miladiyyah.data.local.room.entity.AnnouncementEntity
 import com.wahidiyah.miladiyyah.data.local.room.entity.CalendarDayEntity
 import com.wahidiyah.miladiyyah.data.local.room.entity.NotificationPreferencesEntity
 import com.wahidiyah.miladiyyah.data.local.room.entity.PrayerTimeEntity
@@ -27,6 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun calendarDayDao(): CalendarDayDao
     abstract fun agendaDao(): AgendaDao
+    abstract fun announcementDao(): AnnouncementDao
     abstract fun prayerTimeDao(): PrayerTimeDao
     abstract fun notificationPreferencesDao(): NotificationPreferencesDao
 }

@@ -33,4 +33,25 @@ object DatabaseMigrations {
             )
         }
     }
-}
+
+    val MIGRATION_2_3 = object : Migration(2, 3) {
+
+        override fun migrate(
+            database: SupportSQLiteDatabase
+        ) {
+            database.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS announcements (
+                    id TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    body TEXT NOT NULL,
+                    publishedAt TEXT NOT NULL,
+                    actionLabel TEXT,
+                    actionUrl TEXT,
+                    isActive INTEGER NOT NULL DEFAULT 1,
+                    PRIMARY KEY(id)
+                )
+                """.trimIndent()
+            )
+        }
+    }}

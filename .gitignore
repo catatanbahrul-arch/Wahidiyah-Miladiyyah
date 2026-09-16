@@ -11,3 +11,8 @@ captures/
 *.apk
 *.aab
 *.hprof
+
+# Android signing keys
+*.jks
+*.keystore
+*.p12

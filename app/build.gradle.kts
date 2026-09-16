@@ -37,64 +37,47 @@ android {
      * KEY_ALIAS
      * KEY_PASSWORD
      *
-     * Untuk GitHub Actions, environment variable tersebut
-     * akan berasal dari GitHub Secrets.
+     * Jika secrets belum tersedia:
+     * - debug tetap dapat dibuild
+     * - project tetap dapat dikonfigurasi
+     * - release signing tidak diaktifkan
      *
-     * Jika secrets belum tersedia, Gradle tetap dapat
-     * melakukan konfigurasi project tanpa membocorkan rahasia.
-     * Build signed akan diaktifkan oleh workflow setelah
-     * GitHub Secrets selesai dipasang.
+     * Jika semua environment variable tersedia:
+     * - release signing otomatis diaktifkan
      * ========================================================
      */
 
-val keystoreFile = System.getenv("KEYSTORE_FILE")
-val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
-val keyAliasValue = System.getenv("KEY_ALIAS")
-val keyPassword = System.getenv("KEY_PASSWORD")
+    val keystoreFile = System.getenv("KEYSTORE_FILE")
+    val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
+    val keyAliasValue = System.getenv("KEY_ALIAS")
+    val keyPassword = System.getenv("KEY_PASSWORD")
 
-val hasReleaseSigning =
-    !keystoreFile.isNullOrBlank() &&
-    !keystorePassword.isNullOrBlank() &&
-    !keyAliasValue.isNullOrBlank() &&
-    !keyPassword.isNullOrBlank()
+    val hasReleaseSigning =
+        !keystoreFile.isNullOrBlank() &&
+        !keystorePassword.isNullOrBlank() &&
+        !keyAliasValue.isNullOrBlank() &&
+        !keyPassword.isNullOrBlank()
 
-val keystoreFile = System.getenv("KEYSTORE_FILE")
-val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
-val keyAliasValue = System.getenv("KEY_ALIAS")
-val keyPassword = System.getenv("KEY_PASSWORD")
-
-val hasReleaseSigning =
-    !keystoreFile.isNullOrBlank() &&
-    !keystorePassword.isNullOrBlank() &&
-    !keyAliasValue.isNullOrBlank() &&
-    !keyPassword.isNullOrBlank()
-
-signingConfigs {
-    if (hasReleaseSigning) {
-        create("release") {
-            storeFile = file(keystoreFile!!)
-            storePassword = keystorePassword
-            keyAlias = keyAliasValue
-            this.keyPassword = keyPassword
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(keystoreFile!!)
+                storePassword = keystorePassword
+                keyAlias = keyAliasValue
+                this.keyPassword = keyPassword
+            }
         }
     }
-}
-
-
 
     buildTypes {
         release {
-        if (hasReleaseSigning) {
-            signingConfig = signingConfigs.getByName("release")
-        }
-
-        if (hasReleaseSigning) {
-
-        }
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
 
             /*
-             * Release akan menggunakan signing config ketika
-             * environment signing tersedia.
+             * Release tetap menggunakan konfigurasi aplikasi
+             * yang sudah ada. Minify belum diaktifkan.
              */
 
             isMinifyEnabled = false

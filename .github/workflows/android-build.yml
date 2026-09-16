@@ -31,7 +31,25 @@ jobs:
         run: |
           git status --short
           test -f app/build.gradle.kts
+          test -f app/src/main/AndroidManifest.xml
           test -f gradlew
+
+      - name: Release configuration audit
+        run: |
+          echo "Checking Android release configuration..."
+
+          grep -q 'compileSdk = 36' app/build.gradle.kts
+          grep -q 'targetSdk = 36' app/build.gradle.kts
+          grep -q 'applicationId = "com.wahidiyah.miladiyyah"' app/build.gradle.kts
+          grep -q 'versionCode = 1' app/build.gradle.kts
+          grep -q 'versionName = "1.0.0"' app/build.gradle.kts
+
+          grep -q 'android:name=".MainActivity"' app/src/main/AndroidManifest.xml
+          grep -q 'android:exported="true"' app/src/main/AndroidManifest.xml
+          grep -q 'android.intent.action.MAIN' app/src/main/AndroidManifest.xml
+          grep -q 'android.intent.category.LAUNCHER' app/src/main/AndroidManifest.xml
+
+          echo "Release configuration audit passed."
 
       - name: Prepare release keystore
         env:
@@ -93,6 +111,22 @@ jobs:
 
           echo "Signing inputs verified."
           echo "Alias verified: $KEY_ALIAS"
+
+      - name: Run unit tests
+        env:
+          KEYSTORE_FILE: ${{ env.KEYSTORE_FILE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew test --stacktrace
+
+      - name: Run Android Lint
+        env:
+          KEYSTORE_FILE: ${{ env.KEYSTORE_FILE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew lintRelease --stacktrace
 
       - name: Build debug APK
         env:
@@ -159,3 +193,16 @@ jobs:
           name: wahidiyah-miladiyyah-signed-release-aab
           path: app/build/outputs/bundle/release/*.aab
           if-no-files-found: error
+
+      - name: Final release gate
+        run: |
+          echo "=================================================="
+          echo " RELEASE QUALITY GATE PASSED"
+          echo "=================================================="
+          echo "Target SDK : 36"
+          echo "Version    : 1.0.0"
+          echo "VersionCode: 1"
+          echo "Signed AAB : VERIFIED"
+          echo "Unit tests : PASSED"
+          echo "Lint       : PASSED"
+          echo "=================================================="

@@ -1,4 +1,4 @@
-﻿package com.wahidiyah.miladiyyah.feature.home
+package com.wahidiyah.miladiyyah.feature.home
 
 import androidx.compose.foundation.shape.CircleShape
 
@@ -34,15 +34,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.wahidiyah.miladiyyah.R
+import com.wahidiyah.miladiyyah.data.local.room.db.DatabaseProvider
+import com.wahidiyah.miladiyyah.data.local.room.entity.AnnouncementEntity
+import com.wahidiyah.miladiyyah.data.repository.AnnouncementRepository
 import com.wahidiyah.miladiyyah.core.theme.GreenDark
 import com.wahidiyah.miladiyyah.core.theme.GreenPale
 import com.wahidiyah.miladiyyah.core.theme.GreenSoft
@@ -52,6 +61,15 @@ private data class QuickMenu(val title: String, val icon: ImageVector)
 
 @Composable
 fun HomeScreen(paddingValues: PaddingValues) {
+    val context = LocalContext.current
+    var announcements by remember { mutableStateOf<List<AnnouncementEntity>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        announcements = AnnouncementRepository(
+            DatabaseProvider.get(context).announcementDao()
+        ).getActive()
+    }
+
     val quick = listOf(
         QuickMenu("Kalender", Icons.Default.CalendarMonth),
         QuickMenu("Kegiatan", Icons.Default.Event),
@@ -101,7 +119,13 @@ fun HomeScreen(paddingValues: PaddingValues) {
         }
 
         SectionTitle("Pengumuman")
-        EmptyCard("Belum ada pengumuman.")
+        if (announcements.isEmpty()) {
+            EmptyCard("Belum ada pengumuman.")
+        } else {
+            announcements.forEach { announcement ->
+                AnnouncementCard(announcement)
+            }
+        }
 
         SectionTitle("Hari Ini")
         Card(
@@ -202,6 +226,46 @@ private fun QuickMenuCard(item: QuickMenu) {
 }
 
 @Composable
+private fun AnnouncementCard(item: AnnouncementEntity) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = androidx.compose.ui.graphics.Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(
+                item.title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = GreenDark
+            )
+
+            if (item.body.isNotBlank()) {
+                Text(
+                    item.body,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextMuted
+                )
+            }
+
+            if (item.publishedAt.isNotBlank()) {
+                Text(
+                    item.publishedAt,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = TextMuted
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun EmptyCard(text: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -216,7 +280,3 @@ private fun EmptyCard(text: String) {
         )
     }
 }
-
-
-
-

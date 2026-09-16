@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -15,6 +16,8 @@ object AnnouncementSyncScheduler {
         "wahidiyah_announcement_periodic_sync"
 
     private const val REPEAT_INTERVAL_HOURS = 6L
+    private const val UNIQUE_NOW_WORK_NAME =
+        "wahidiyah_announcement_sync_now"
 
     /**
      * Menjadwalkan sinkronisasi pengumuman berkala.
@@ -54,6 +57,35 @@ object AnnouncementSyncScheduler {
             .enqueueUniquePeriodicWork(
                 UNIQUE_WORK_NAME,
                 ExistingPeriodicWorkPolicy.KEEP,
+                request
+            )
+    }
+
+    /**
+     * Menjalankan sinkronisasi pengumuman satu kali segera.
+     */
+    fun syncNow(
+        context: Context,
+        endpointUrl: String
+    ) {
+        val endpoint = endpointUrl.trim()
+
+        require(endpoint.startsWith("https://")) {
+            "Announcement endpoint wajib menggunakan HTTPS."
+        }
+
+        val inputData = workDataOf(
+            AnnouncementSyncWorker.KEY_ENDPOINT_URL to endpoint
+        )
+
+        val request = OneTimeWorkRequestBuilder<AnnouncementSyncWorker>()
+            .setInputData(inputData)
+            .build()
+
+        WorkManager.getInstance(context.applicationContext)
+            .enqueueUniqueWork(
+                UNIQUE_NOW_WORK_NAME,
+                androidx.work.ExistingWorkPolicy.REPLACE,
                 request
             )
     }

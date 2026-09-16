@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.wahidiyah.miladiyyah.core.navigation.AppNavHost
 import com.wahidiyah.miladiyyah.data.local.AnnouncementLocalSeeder
+import com.wahidiyah.miladiyyah.data.sync.AnnouncementSyncScheduler
 import com.wahidiyah.miladiyyah.core.notification.AgendaNotificationHelper
 import com.wahidiyah.miladiyyah.core.notification.PrayerNotificationHelper
 import com.wahidiyah.miladiyyah.core.notification.PrayerNotificationScheduler
@@ -22,6 +23,11 @@ import com.wahidiyah.miladiyyah.core.theme.WahidiyahTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        private const val ANNOUNCEMENT_ENDPOINT =
+            "https://script.google.com/macros/s/AKfycbz58q9tgjq97JlFopa7xJdVNrdtaroPvtOcYabZGNCxVBHdFOHRFLS9j3i2CsOSyMS2/exec"
+    }
 
     private val notificationPermissionLauncher =
         registerForActivityResult(
@@ -45,6 +51,17 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             AnnouncementLocalSeeder.seedIfEmpty(this@MainActivity)
+
+            AnnouncementSyncScheduler.schedule(
+                this@MainActivity,
+                ANNOUNCEMENT_ENDPOINT
+            )
+
+            AnnouncementSyncScheduler.syncNow(
+                this@MainActivity,
+                ANNOUNCEMENT_ENDPOINT
+            )
+
             AgendaReminderCoordinator.reschedule(this@MainActivity)
             PrayerNotificationScheduler.scheduleUpcoming(this@MainActivity)
             DanaBoxNotificationHelper.ensureChannel(this@MainActivity)

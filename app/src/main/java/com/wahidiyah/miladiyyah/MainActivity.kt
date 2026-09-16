@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import com.wahidiyah.miladiyyah.core.navigation.AppNavHost
 import com.wahidiyah.miladiyyah.core.notification.AgendaNotificationHelper
+import com.wahidiyah.miladiyyah.core.notification.PrayerNotificationHelper
+import com.wahidiyah.miladiyyah.core.notification.PrayerNotificationScheduler
 import com.wahidiyah.miladiyyah.core.notification.AgendaReminderCoordinator
 import com.wahidiyah.miladiyyah.core.theme.WahidiyahTheme
 import kotlinx.coroutines.launch
@@ -16,9 +18,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         AgendaNotificationHelper.ensureChannel(this)
+        PrayerNotificationHelper.ensureChannel(this)
 
         lifecycleScope.launch {
             AgendaReminderCoordinator.reschedule(this@MainActivity)
+            PrayerNotificationScheduler.scheduleUpcoming(this@MainActivity)
         }
 
         setContent {

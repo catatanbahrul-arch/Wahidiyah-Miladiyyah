@@ -1,7 +1,9 @@
 package com.wahidiyah.miladiyyah.feature.home
 
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.shape.CircleShape
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +29,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LiveTv
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -227,6 +230,10 @@ private fun QuickMenuCard(item: QuickMenu) {
 
 @Composable
 private fun AnnouncementCard(item: AnnouncementEntity) {
+    val context = LocalContext.current
+    val actionLabel = item.actionLabel?.trim()
+    val actionUrl = item.actionUrl?.trim()
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
@@ -260,6 +267,26 @@ private fun AnnouncementCard(item: AnnouncementEntity) {
                     style = MaterialTheme.typography.labelSmall,
                     color = TextMuted
                 )
+            }
+
+            if (!actionLabel.isNullOrBlank() && !actionUrl.isNullOrBlank()) {
+                Button(
+                    onClick = {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(actionUrl)
+                        )
+
+                        ContextCompat.startActivity(
+                            context,
+                            intent,
+                            null
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = actionLabel)
+                }
             }
         }
     }

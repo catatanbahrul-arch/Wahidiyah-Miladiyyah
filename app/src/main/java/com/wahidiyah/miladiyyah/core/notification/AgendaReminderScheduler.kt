@@ -31,7 +31,7 @@ object AgendaReminderScheduler {
         val dateTime = LocalDateTime.of(reminderDate, time)
 
         val triggerAt = dateTime
-            .atZone(ZoneId.systemDefault())
+            .atZone(ZoneId.of("Asia/Jakarta"))
             .toInstant()
             .toEpochMilli()
 

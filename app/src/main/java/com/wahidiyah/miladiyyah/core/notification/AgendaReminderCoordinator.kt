@@ -23,8 +23,18 @@ object AgendaReminderCoordinator {
 
             val today = LocalDate.now()
 
+            /*
+             * Reminder kegiatan khusus Jamaah dibuat H-7 sampai Hari H.
+             *
+             * Karena H-7 sebuah acara dapat berada jauh di masa depan,
+             * coordinator harus mengambil seluruh kegiatan mendatang,
+             * bukan hanya 7 hari ke depan.
+             *
+             * Rentang 366 hari digunakan untuk mencakup kalender kegiatan
+             * satu tahun penuh termasuk kemungkinan tahun kabisat.
+             */
             val fromDate = today.toString()
-            val toDate = today.plusDays(7).toString()
+            val toDate = today.plusDays(366).toString()
 
             val agendas =
                 database.agendaDao()
